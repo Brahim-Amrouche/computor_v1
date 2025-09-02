@@ -1,4 +1,4 @@
-use std::{mem, path::Iter};
+use std::{mem};
 
 struct List<T>{
 	head: Link<T>
@@ -37,6 +37,22 @@ impl<T> IntoIterator for List<T> {
 	}
 }
 
+pub struct ListIterator<'a, T>{
+	next: Option<&'a Node<T>>
+}
+
+impl<'a,T> Iterator for ListIterator<'a, T>{
+	type Item = &'a T;
+
+	fn next(&mut self) -> Option<Self::Item> {
+		self.next.map(|node| {
+			self.next = node.next.as_deref();
+			&node.content
+		})
+	}
+}
+
+
 impl<T> List<T>{
 	fn new() -> Self{
 		List { head: None }
@@ -72,6 +88,10 @@ impl<T> List<T>{
 	pub fn peek_mut(&mut self) -> Option<&mut T>{
 		self.head.as_mut()
 			.map(|node| &mut node.content)
+	}
+
+	pub fn iter(&self) -> ListIterator<T>{
+		ListIterator { next: self.head.as_deref() }
 	}
 }
 

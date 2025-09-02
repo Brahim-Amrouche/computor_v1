@@ -3,5 +3,3 @@ pub struct Polynomial {
 	exponent: u64
 }
 
-
-
