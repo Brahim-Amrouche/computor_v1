@@ -1,9 +1,9 @@
-use std::{clone, collections::LinkedList};
+use std::{collections::LinkedList};
 
 pub(crate) struct Tokenizer {
 	content: String,
 	seperators: Vec<char>,
-	tokens: LinkedList<String>
+	pub(crate) tokens: LinkedList<String>
 }
 
 impl Tokenizer {
@@ -21,9 +21,14 @@ impl Tokenizer {
 			if !self.seperators.contains(&char){
 				continue;
 			}
-			let slice = &self.content[start_pos..=pos];
+			let slice = &self.content[start_pos..pos];
 			self.tokens.push_back(slice.to_string());
+			self.tokens.push_back(char.to_string());
 			start_pos = pos + 1;
+		}
+		if start_pos < self.content.len(){
+			let slice = &self.content[start_pos..self.content.len()];
+			self.tokens.push_back(slice.to_string());
 		}
 	}
 

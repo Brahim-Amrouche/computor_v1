@@ -8,5 +8,5 @@ fn main() {
 		return;
 	}
 	let mut parser = parser::Parser::new(args.remove(1));
-	parser.parse();
+	let _ = parser.parse();
 }
