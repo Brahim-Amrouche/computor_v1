@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum PolynomialsToken {
 	Space,
 	Addition,
@@ -10,6 +10,20 @@ pub enum PolynomialsToken {
 	Exponential,
 	Equals,
 	Expression(String)
+}
+
+impl std::fmt::Display for PolynomialsToken {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match self {
+			PolynomialsToken::Space => write!(f, " "),
+			PolynomialsToken::Addition => write!(f, "+"),
+			PolynomialsToken::Substraction => write!(f, "-"),
+			PolynomialsToken::Multiplication => write!(f, "*"),
+			PolynomialsToken::Exponential => write!(f, "^"),
+			PolynomialsToken::Equals => write!(f, "="),
+			PolynomialsToken::Expression(e) => write!(f, "{}", e),
+		}
+	}
 }
 
 #[derive(Debug)]
@@ -71,4 +85,11 @@ impl Tokenizer {
 		}
 	}
 
+	pub fn get_next_token(&mut self) -> Option<PolynomialsToken> {
+		self.tokens.pop_front()
+	}
+
+	pub fn peek(&self) -> Option<&PolynomialsToken> {
+		self.tokens.front()
+	}
 }
