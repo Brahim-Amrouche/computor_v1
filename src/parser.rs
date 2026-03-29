@@ -6,12 +6,8 @@ pub struct Parser {
     tokens: Tokenizer,
 }
 
-pub trait MathNotation {}
-
-impl MathNotation for PolynomialsToken {}
-
 #[derive(Debug, Clone)]
-pub struct Node<T: MathNotation> {
+pub struct Node<T> {
     pub value: T,
     pub parent: Option<usize>,
     pub lhs: Option<usize>,
@@ -19,12 +15,12 @@ pub struct Node<T: MathNotation> {
 }
 
 #[derive(Debug, Clone)]
-pub struct ParseTree<T: MathNotation> {
+pub struct ParseTree<T> {
     pub tree: Vec<Node<T>>,
     pub root: Option<usize>,
 }
 
-impl<T: MathNotation> ParseTree<T> {
+impl<T> ParseTree<T> {
     pub fn new() -> Self {
         ParseTree {
             tree: Vec::new(),
@@ -80,7 +76,7 @@ impl<T: MathNotation> ParseTree<T> {
     }
 }
 
-impl<T: MathNotation + fmt::Display> fmt::Display for ParseTree<T> {
+impl<T: fmt::Display> fmt::Display for ParseTree<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(root_idx) = self.root {
             self.print_node(f, root_idx, String::new(), true, true)
