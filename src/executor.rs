@@ -57,7 +57,10 @@ impl Executor {
 
         if max_degree == 1 {
             println!("The solution is:");
-            let sol = -c / b;
+            let mut sol = -c / b;
+            if sol == -0.0 {
+                sol = 0.0;
+            }
             println!("{}", sol);
             return Ok(());
         }
@@ -75,7 +78,6 @@ impl Executor {
             } else if delta == 0.0 {
                 println!("Discriminant is exactly zero, the real solution is:");
                 let sol = -b / (2.0 * a);
-                // Prevent -0 output
                 if sol == -0.0 {
                     println!("0");
                 } else {
@@ -89,7 +91,7 @@ impl Executor {
                 if real_part == -0.0 {
                     real_part = 0.0;
                 }
-                
+
                 let imag_part = sqrt_neg_delta / (2.0 * a);
                 let abs_imag = imag_part.abs();
 

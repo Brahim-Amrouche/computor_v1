@@ -6,12 +6,6 @@ use std::ops::{Add, Mul, Sub};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Polynomial {
-    /// The mathematical terms of the polynomial.
-    /// The `i32` key represents the exponent (power of X).
-    /// The `f64` value represents the coefficient.
-    ///
-    /// Using BTreeMap automatically keeps the polynomial sorted by degree,
-    /// making it extremely easy to print out the final "Reduced form".
     pub terms: BTreeMap<i32, f64>,
 }
 
@@ -23,30 +17,24 @@ impl Polynomial {
         }
     }
 
-    /// Evaluates structural equality handling floating points and zeros.
     pub fn cleanup(&mut self) {
-        // Remove mathematically insignificant elements to stay clean.
         self.terms.retain(|_, &mut coeff| coeff != 0.0);
     }
 
-    /// Constructs a polynomial from a standalone constant (e.g., 5.6 -> 5.6 * X^0)
     pub fn from_constant(val: f64) -> Self {
         let mut terms = BTreeMap::new();
         if val != 0.0 {
-            // Keep map perfectly clean if 0
             terms.insert(0, val);
         }
         Self { terms }
     }
 
-    /// Constructs a single `X` polynomial element (1.0 * X^1)
     pub fn from_x() -> Self {
         let mut terms = BTreeMap::new();
         terms.insert(1, 1.0);
         Self { terms }
     }
 
-    /// Elevates an entire polynomial to a given power (e.g. X^2)
     pub fn pow(self, power: i32) -> Self {
         if power == 0 {
             return Self::from_constant(1.0);
@@ -125,7 +113,6 @@ impl Mul for Polynomial {
 
     fn mul(self, other: Self) -> Self {
         let mut result = BTreeMap::new();
-        // Cross multiplication of every term in `self` with every term in `other`
         for (p1, c1) in &self.terms {
             for (p2, c2) in &other.terms {
                 let power = p1 + p2;
@@ -180,7 +167,6 @@ impl Interpreter {
         let lhs_poly = Self::eval_node(tree, lhs_idx)?;
         let rhs_poly = Self::eval_node(tree, rhs_idx)?;
 
-        // Bring RHS to LHS: LHS - RHS = 0
         Ok(lhs_poly - rhs_poly)
     }
 
@@ -209,7 +195,6 @@ impl Interpreter {
                         Self::eval_node(tree, node.rhs.ok_or(InterpreterError::MissingOperand)?)?;
                     Ok(lhs + rhs)
                 } else {
-                    // Unary plus
                     let rhs =
                         Self::eval_node(tree, node.rhs.ok_or(InterpreterError::MissingOperand)?)?;
                     Ok(rhs)
@@ -222,7 +207,6 @@ impl Interpreter {
                         Self::eval_node(tree, node.rhs.ok_or(InterpreterError::MissingOperand)?)?;
                     Ok(lhs - rhs)
                 } else {
-                    // Unary minus
                     let rhs =
                         Self::eval_node(tree, node.rhs.ok_or(InterpreterError::MissingOperand)?)?;
                     Ok(Polynomial::new() - rhs)
