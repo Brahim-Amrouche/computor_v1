@@ -6,7 +6,9 @@ fn get_computor_output(equation: &str) -> String {
         .output()
         .expect("Failed to execute process");
 
-    String::from_utf8_lossy(&output.stdout).into_owned()
+    let mut out = String::from_utf8_lossy(&output.stdout).into_owned();
+    out.push_str(&String::from_utf8_lossy(&output.stderr));
+    out
 }
 
 #[test]
@@ -100,6 +102,16 @@ fn test_negative_discriminant() {
     assert!(
         out.contains("* i"),
         "Failed missing imaginary number identifier formatting. Output: {}",
+        out
+    );
+}
+
+#[test]
+fn test_third_degree_refusal() {
+    let out = get_computor_output("1 * X ^ 0 + 5 * X ^ 1 + 3 * X ^ 2 + 7 * X ^ 3 = 0");
+    assert!(
+        out.contains("strictly greater than 2"),
+        "Failed detecting capability refusal over Degree 2. Output: {}",
         out
     );
 }
