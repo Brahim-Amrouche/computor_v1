@@ -1,8 +1,10 @@
 NAME = computor
 
+SOURCES = $(wildcard src/*.rs)
+
 all: $(NAME)
 
-$(NAME):
+$(NAME): $(SOURCES)
 	@echo "Building $(NAME)..."
 	@cargo build --release
 	@cp target/release/computor_v1 ./$(NAME)
